@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal — SecureAuth</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            /* Light background as per the image */
+            color: #0f172a;
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Override glassmorphism bg-orbs for admin portal */
+        .bg-orbs {
+            display: none;
+        }
+
+        /* --- Layout --- */
+        .admin-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            /* Space for bottom nav */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Header --- */
+        .admin-header {
+            background: #0f172a;
+            color: white;
+            padding: 40px 24px 30px;
+            position: relative;
+        }
+
+        .header-welcome {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 4px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .admin-content {
+            padding: 24px;
+            margin-top: -30px;
+            /* Overlap with header slightly */
+        }
+
+        /* --- Stats Row --- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card:nth-child(1) {
+            background: #f8fafe;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Blue tint */
+        .stat-card:nth-child(2) {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+        }
+
+        /* Yellow tint */
+        .stat-card:nth-child(3) {
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+        }
+
+        /* Green tint */
+
+        .stat-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* --- Section Titles --- */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            margin-top: 32px;
+            text-transform: none;
+            letter-spacing: normal;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* --- Quick Actions Grid --- */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .action-icon {
+            font-size: 24px;
+        }
+
+        .action-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* --- Recent Jobs Card --- */
+        .recent-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            min-height: 200px;
+        }
+
+        .job-list-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .job-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .job-list-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .job-list-company {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .action-btn-danger {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #f1f5f9;
+            z-index: 50;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #0f172a;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* --- Modals (Full screen overlays for action views) --- */
+        .screen-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            height: 100vh;
+            background: white;
+            z-index: 100;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            width: 100%;
+            max-width: 100%;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+            /* Shadow on left edge */
+        }
+
+        .screen-overlay.active {
+            transform: translateX(-50%);
+            /* Slide to center */
+        }
+
+        .screen-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #0f172a;
+        }
+
+        .screen-title {
+            font-size: 18px;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .screen-content {
+            padding: 24px;
+        }
+
+        /* Form overrides for light theme */
+        .screen-content .form-group label {
+            color: #475569;
+        }
+
+        .screen-content .form-control {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+
+        .screen-content .form-control:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .user-list-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .template-canvas-container {
+            width: 100%;
+            height: 300px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+        }
+
+        #template-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: 80%;
+        }
+
+        .sample-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .sample-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            object-fit: cover;
+            border: 2px solid transparent;
+        }
+
+        .sample-img.active {
+            border-color: #0f172a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-container">
+
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-welcome">Welcome back,</div>
+            <div class="header-title" id="admin-name">Admin</div>
+            <div class="role-badge" id="admin-role-badge">Administrator</div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-value" id="stat-jobs">0</div>
+                    <div class="stat-label">Total Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="stat-seekers">0</div>
+                    <div class="stat-label">Seekers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="stat-providers">0</div>
+                    <div class="stat-label">Providers</div>
+                </div>
+            </div>
+
+            <div class="section-title">Quick Actions</div>
+
+            <!-- Quick Actions Grid -->
+            <div class="actions-grid">
+                <div class="action-card" onclick="openScreen('screen-create-job')">
+                    <div class="action-icon">💼</div>
+                    <div class="action-title">Create Job</div>
+                </div>
+                <div class="action-card" onclick="openScreen('screen-manage-users')">
+                    <div class="action-icon">👥</div>
+                    <div class="action-title">Manage Users</div>
+                </div>
+                <div class="action-card" onclick="openScreen('screen-premium-control')">
+                    <div class="action-icon">👑</div>
+                    <div class="action-title">Premium Control</div>
+                </div>
+                <div class="action-card" onclick="openScreen('screen-templates')">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-title">Templates</div>
+                </div>
+                <div class="action-card" onclick="openScreen('screen-co-admins')">
+                    <div class="action-icon">🧑‍🤝‍🧑</div>
+                    <div class="action-title">Co-Admins</div>
+                </div>
+            </div>
+
+            <div class="section-title">Recent Jobs</div>
+
+            <div class="recent-card" id="recent-jobs-list">
+                <div style="text-align:center; color:#94a3b8; margin-top: 40px;">No recent jobs</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">Home</div>
+        </a>
+        <a href="#" class="nav-item" onclick="openScreen('screen-create-job')">
+            <div class="nav-icon">💼</div>
+            <div class="nav-text">Jobs</div>
+        </a>
+        <a href="dashboard.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-text">Profile</div>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🛡️</div>
+            <div class="nav-text">Admin</div>
+        </a>
+    </nav>
+
+
+    <!-- SCREENS / MODALS -->
+
+    <!-- 1. Create Job Screen -->
+    <div class="screen-overlay" id="screen-create-job">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('screen-create-job')">←</button>
+            <div class="screen-title">Create Job</div>
+        </div>
+        <div class="screen-content">
+            <form id="create-job-form">
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" id="job-title" class="form-control" placeholder="e.g. Tech Startup Role"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="job-company" class="form-control" placeholder="e.g. Google" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="job-location" class="form-control" placeholder="e.g. Remote">
+                </div>
+                <div class="form-group">
+                    <label>Salary Range</label>
+                    <input type="text" id="job-salary" class="form-control" placeholder="e.g. $100k - $120k">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="job-desc" class="form-control" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: #0f172a; width:100%;">Post Job</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Manage Users Screen -->
+    <div class="screen-overlay" id="screen-manage-users">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('screen-manage-users')">←</button>
+            <div class="screen-title">Manage Users</div>
+        </div>
+        <div class="screen-content">
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button class="btn btn-secondary" onclick="loadUsers('seeker')"
+                    style="flex:1; border-color:#0f172a; color:#0f172a;">Seekers</button>
+                <button class="btn btn-secondary" onclick="loadUsers('provider')"
+                    style="flex:1; border-color:#0f172a; color:#0f172a;">Providers</button>
+            </div>
+            <div id="users-list-container">
+                <!-- User list inject here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Premium Control Screen -->
+    <div class="screen-overlay" id="screen-premium-control">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('screen-premium-control')">←</button>
+            <div class="screen-title">Premium Control</div>
+        </div>
+        <div class="screen-content">
+            <p style="color:#64748b; margin-bottom:20px; font-size:14px;">Toggle premium status for users (Seekers &
+                Providers).</p>
+            <div id="premium-users-list">
+                <!-- Premium control list inject here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Templates Screen -->
+    <div class="screen-overlay" id="screen-templates">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('screen-templates')">←</button>
+            <div class="screen-title">Templates Maker</div>
+        </div>
+        <div class="screen-content">
+            <label style="font-size:13px; font-weight:600; margin-bottom:8px; display:block;">Select Background or
+                Upload</label>
+            <div class="sample-images">
+                <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=500&auto=format&fit=crop"
+                    class="sample-img active" onclick="setTemplateBg(this)">
+                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&auto=format&fit=crop"
+                    class="sample-img" onclick="setTemplateBg(this)">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&auto=format&fit=crop"
+                    class="sample-img" onclick="setTemplateBg(this)">
+            </div>
+
+            <div class="form-group">
+                <input type="file" id="template-upload" class="form-control" accept="image/*"
+                    onchange="uploadTemplateBg(event)">
+            </div>
+
+            <div class="template-canvas-container" id="canvas-wrapper">
+                <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=500&auto=format&fit=crop"
+                    id="template-canvas">
+                <div class="template-text-overlay" id="template-overlay-text">We are Hiring!</div>
+            </div>
+
+            <div class="form-group">
+                <label>Advertisement Title (Overlay Text)</label>
+                <input type="text" id="template-text-input" class="form-control" value="We are Hiring!"
+                    oninput="document.getElementById('template-overlay-text').innerText = this.value">
+            </div>
+
+            <div class="form-group">
+                <label>Advertisement Description</label>
+                <textarea id="template-desc-input" class="form-control" rows="4"
+                    placeholder="Enter advertisement details..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" style="background:#0f172a; width:100%;" onclick="postAdvertisement()"
+                id="btn-post-ad">Post Advertisement</button>
+        </div>
+    </div>
+
+    <!-- 5. Co-Admins Screen -->
+    <div class="screen-overlay" id="screen-co-admins">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('screen-co-admins')">←</button>
+            <div class="screen-title">Co-Admins</div>
+        </div>
+        <div class="screen-content">
+            <form id="create-coadmin-form" style="margin-bottom: 30px;">
+                <h3 style="font-size:16px; margin-bottom:16px; color:#0f172a;">Create New Co-Admin</h3>
+                <div class="form-group">
+                    <input type="text" id="coadmin-name" class="form-control" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="coadmin-email" class="form-control" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="coadmin-password" class="form-control" placeholder="Password" required
+                        minlength="6">
+                </div>
+                <div id="coadmin-alert"></div>
+                <button type="submit" class="btn btn-primary" style="background:#0f172a; width:100%;"
+                    id="btn-create-coadmin">Create Co-Admin</button>
+            </form>
+
+            <h3 style="font-size:16px; margin-bottom:16px; color:#0f172a;">Existing Co-Admins</h3>
+            <div id="coadmin-list"></div>
+        </div>
+    </div>
+
+    <script src="js/admin-portal.js"></script>
+</body>
+
+</html>

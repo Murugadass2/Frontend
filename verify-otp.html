@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify OTP — SecureAuth</title>
+    <meta name="description" content="Enter the 6-digit OTP sent to your email to verify your account." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="page">
+        <div class="card">
+            <div class="brand">
+                <div class="brand-icon">📬</div>
+                <h1>Check Your Email</h1>
+                <p id="otp-subtitle">Enter the 6-digit code we sent to your email</p>
+            </div>
+
+            <div id="alert-box"></div>
+
+            <form id="otp-form" novalidate>
+                <!-- OTP inputs -->
+                <div class="otp-container" id="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-0" />
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-1" />
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-2" />
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-3" />
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-4" />
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" id="otp-5" />
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="verify-btn">
+                    <span id="btn-text">Verify OTP</span>
+                </button>
+            </form>
+
+            <!-- Resend OTP -->
+            <div class="resend-section" id="resend-section">
+                <span id="timer-text">Resend OTP in <span class="timer" id="countdown">2:00</span></span>
+                <button class="resend-btn" id="resend-btn" type="button">Resend OTP</button>
+            </div>
+
+            <div class="footer-link" style="margin-top: 16px;">
+                <a href="signup.html">← Back to Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/verify-otp.js"></script>
+</body>
+
+</html>

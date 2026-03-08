@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Seeker Profile — SecureAuth</title>
+    <meta name="description" content="Complete your Job Seeker profile to get started." />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .profile-card {
+            max-width: 680px;
+            padding: 40px 44px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Select Dropdown */
+        .form-select {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .form-select option {
+            background: #ffffff;
+            color: var(--text-primary);
+        }
+
+        /* Tags for preferred locations */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            min-height: 36px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            color: var(--primary-light);
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .tag-remove {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .tag-remove:hover {
+            opacity: 1;
+        }
+
+        .tag-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tag-input-row .form-control {
+            flex: 1;
+        }
+
+        .btn-add-tag {
+            padding: 10px 18px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--primary-light);
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .btn-add-tag:hover {
+            border-color: var(--primary);
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        /* Phone verify section */
+        .phone-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .phone-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .btn-verify-phone {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-top: 28px;
+            transition: all var(--transition);
+        }
+
+        .btn-verify-phone:hover {
+            box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-verify-phone:disabled {
+            opacity: 0.5;
+            cursor: default;
+            transform: none;
+        }
+
+        .phone-verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #86efac;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* Phone OTP Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 36px;
+            width: 400px;
+            max-width: 90vw;
+            box-shadow: var(--shadow-glow);
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .modal-box h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .modal-box p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            width: 100%;
+            margin-top: 12px;
+            transition: color var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Section heading */
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 28px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title:first-of-type {
+            margin-top: 8px;
+        }
+
+        @media (max-width: 500px) {
+            .profile-card {
+                padding: 28px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .phone-row {
+                flex-direction: column;
+            }
+
+            .btn-verify-phone {
+                margin-top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="page">
+        <div class="card profile-card">
+            <div class="brand">
+                <div class="brand-icon">📋</div>
+                <h1>Create Your Account</h1>
+                <p>Complete your Job Seeker profile to get started</p>
+            </div>
+
+            <div id="alert-box"></div>
+
+            <form id="profile-form" novalidate>
+                <!-- Personal Information -->
+                <div class="section-title">Personal Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_name">Full Name *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="full_name" class="form-control" placeholder="Enter your full name"
+                                required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📅</span>
+                            <input type="date" id="dob" class="form-control" style="padding-left:46px;" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="father_name">Father Name</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👨</span>
+                            <input type="text" id="father_name" class="form-control" placeholder="Father's name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qualification">Highest Qualification</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🎓</span>
+                            <select id="qualification" class="form-select">
+                                <option value="">Select qualification</option>
+                                <option value="10th">10th / SSLC</option>
+                                <option value="12th">12th / HSC</option>
+                                <option value="diploma">Diploma</option>
+                                <option value="ug">UG (Bachelor's)</option>
+                                <option value="pg">PG (Master's)</option>
+                                <option value="phd">Ph.D / Doctorate</option>
+                                <option value="iti">ITI</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="section-title">Location Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="current_location">Current Location</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📍</span>
+                            <input type="text" id="current_location" class="form-control" placeholder="City / Town" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🌍</span>
+                            <input type="text" id="country" class="form-control" placeholder="Country" value="India" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏛️</span>
+                            <input type="text" id="state" class="form-control" placeholder="State" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="district">District</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🗺️</span>
+                            <input type="text" id="district" class="form-control" placeholder="District" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_address">Full Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon" style="top:16px;">🏠</span>
+                        <textarea id="full_address" class="form-control" rows="2" placeholder="Door No, Street, Area..."
+                            style="resize: vertical; min-height: 56px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Job Preferences -->
+                <div class="section-title">Job Preferences</div>
+
+                <div class="form-group">
+                    <label for="company_name">Company Name (if any)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🏢</span>
+                        <input type="text" id="company_name" class="form-control"
+                            placeholder="Current or last company" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred Job Location(s) <span style="color: var(--text-muted); font-weight:400;">(add
+                            multiple)</span></label>
+                    <div class="tag-input-row">
+                        <div class="input-wrapper" style="flex:1;">
+                            <span class="input-icon">🎯</span>
+                            <input type="text" id="job-location-input" class="form-control"
+                                placeholder="Type a city & press Add" />
+                        </div>
+                        <button type="button" class="btn-add-tag" id="add-location-btn" title="Add location">+</button>
+                    </div>
+                    <div class="tags-container" id="tags-container"></div>
+                </div>
+
+                <!-- Phone Verification -->
+                <div class="section-title">Phone Verification</div>
+                <div class="phone-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+                            <input type="tel" id="phone" class="form-control" placeholder="+91 9876543210" required />
+                        </div>
+                        <div class="phone-verified-badge" id="phone-badge" style="display:none;">✅ Verified</div>
+                    </div>
+                    <button type="button" class="btn-verify-phone" id="verify-phone-btn">Verify Phone</button>
+                </div>
+
+                <div style="margin-top: 28px;">
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span id="btn-text">Submit Profile</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Phone OTP Modal -->
+    <div class="modal-overlay" id="phone-modal">
+        <div class="modal-box">
+            <h3>📱 Verify Phone</h3>
+            <p id="modal-subtitle">Enter the OTP sent to your phone number</p>
+            <div id="modal-alert"></div>
+            <div class="otp-container" id="phone-otp-container">
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            </div>
+            <button class="btn btn-primary" id="modal-verify-btn">
+                <span id="modal-btn-text">Verify OTP</span>
+            </button>
+            <button class="modal-close" id="modal-close-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="js/job-seeker-profile.js"></script>
+</body>
+
+</html>

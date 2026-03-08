@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — SecureAuth</title>
+    <meta name="description" content="Your SecureAuth dashboard." />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="page dashboard-page">
+        <div class="card dashboard-card">
+            <!-- Avatar -->
+            <div class="user-avatar" id="user-avatar">U</div>
+
+            <div class="brand">
+                <h1 id="welcome-title">Welcome back! 👋</h1>
+                <p>You're securely logged in to your account</p>
+            </div>
+
+            <div class="status-badge"
+                style="display:inline-flex; margin: 0 auto 24px; display: flex; width: fit-content; margin: 0 auto 28px;">
+                <span>✅</span> Verified Account
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">Full Name</div>
+                    <div class="value" id="info-name">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Email</div>
+                    <div class="value" id="info-email" style="font-size:13px; word-break: break-all;">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Member Since</div>
+                    <div class="value" id="info-since">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Role</div>
+                    <div class="value" id="info-role">—</div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" id="logout-btn">
+                🚪 Sign Out
+            </button>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
