@@ -1,4 +1,4 @@
-const API_BASE = '/api/auth';
+const API_BASE = 'https://backend-production-4086.up.railway.app/api/auth';
 
 const form = document.getElementById('signup-form');
 const alertBox = document.getElementById('alert-box');
